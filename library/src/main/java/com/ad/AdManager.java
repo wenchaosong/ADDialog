@@ -35,6 +35,7 @@ public class AdManager {
      * 广告弹窗距离两侧的距离-单位(dp)
      */
     private int padding = 44;
+    private int time = 1000;
     /**
      * 广告弹窗的宽高比
      */
@@ -111,7 +112,7 @@ public class AdManager {
             public void run() {
                 animDialogUtils.show(animType, bounciness, speed);
             }
-        }, 1000);
+        }, time);
     }
 
     /**
@@ -303,6 +304,18 @@ public class AdManager {
      */
     public AdManager setSpeed(double speed) {
         this.speed = speed;
+
+        return this;
+    }
+
+    /**
+     * 设置弹窗弹出时间参数
+     *
+     * @param time
+     * @return
+     */
+    public AdManager setDelayTime(int time) {
+        this.time = time;
 
         return this;
     }

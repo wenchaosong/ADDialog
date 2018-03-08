@@ -62,6 +62,10 @@ public class MainActivity extends Activity {
                  */
                 .setSpeed(5)
                 /**
+                 * 设置弹窗弹出时间
+                 */
+                .setDelayTime(0)
+                /**
                  * 设定弹窗点击事件回调
                  */
                 .setOnImageClickListener(new AdManager.OnImageClickListener() {
