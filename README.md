@@ -41,13 +41,16 @@
                  */
                 .setSpeed(5)
                 /**
+                 * 设置弹窗弹出时间
+                 */
+                .setDelayTime(1000)
+                /**
                  * 设定弹窗点击事件回调
                  */
                 .setOnImageClickListener(new AdManager.OnImageClickListener() {
                     @Override
                     public void onImageClick(View view, int position) {
 
-                        Toast.makeText(MainActivity.this, "position --- " + position, Toast.LENGTH_SHORT).show();
                     }
                 })
                 /**
