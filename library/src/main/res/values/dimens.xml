@@ -1,0 +1,20 @@
+<resources>
+
+    <!-- lineindicator 属性-->
+    <dimen name="line_indicator_line_width">12dp</dimen>
+    <dimen name="line_indicator_gap_width">4dp</dimen>
+    <dimen name="line_indicator_stroke_width">1dp</dimen>
+    <bool name="line_indicator_centered">true</bool>
+
+    <color name="blue">#FFFFFFFF</color>
+    <color name="indicator_bg">#FFFFFFFF</color>
+
+    <bool name="default_circle_indicator_centered">true</bool>
+    <color name="default_circle_indicator_fill_color">#FFFFFFFF</color>
+    <color name="default_circle_indicator_page_color">#00000000</color>
+    <integer name="default_circle_indicator_orientation">0</integer>
+    <dimen name="default_circle_indicator_radius">3dp</dimen>
+    <bool name="default_circle_indicator_snap">false</bool>
+    <color name="default_circle_indicator_stroke_color">#FFDDDDDD</color>
+    <dimen name="default_circle_indicator_stroke_width">1dp</dimen>
+</resources>
