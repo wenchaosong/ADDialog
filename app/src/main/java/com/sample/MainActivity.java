@@ -3,10 +3,12 @@ package com.sample;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import com.ad.AdConstant;
 import com.ad.AdManager;
-import com.sample.R;
+import com.ad.transform.ZoomOutPageTransformer;
 
 import java.util.ArrayList;
 
@@ -30,7 +32,7 @@ public class MainActivity extends Activity {
                 /**
                  * 设置ViewPager的滑动动画
                  */
-                //                .setPageTransformer(new DepthPageTransformer())
+                .setPageTransformer(new ZoomOutPageTransformer())
                 /**
                  * 设置弹窗距离屏幕两侧的距离（单位dp）
                  */
@@ -62,21 +64,22 @@ public class MainActivity extends Activity {
                 /**
                  * 设定弹窗点击事件回调
                  */
-                /*.setOnImageClickListener(new AdManager.OnImageClickListener() {
+                .setOnImageClickListener(new AdManager.OnImageClickListener() {
                     @Override
-                    public void onImageClick(View view, String url) {
+                    public void onImageClick(View view, int position) {
 
+                        Toast.makeText(MainActivity.this, "position --- " + position, Toast.LENGTH_SHORT).show();
                     }
-                })*/
+                })
                 /**
                  * 设定关闭按钮点击事件回调
                  */
-                /*.setOnCliseClickListener(new View.OnClickListener() {
+                .setOnCloseClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
                     }
-                })*/
+                })
                 /**
                  * 开始执行弹窗的显示操作，可传值为0-360，0表示从右开始弹出，逆时针方向，也可以传入自定义的方向值
                  */

@@ -73,16 +73,6 @@ public class AdManager {
         DisplayUtil.screenHightDip = DisplayUtil.px2dip(context, dm.heightPixels);
     }
 
-    private View.OnClickListener imageOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-
-            if (onImageClickListener != null) {
-                onImageClickListener.onImageClick(view);
-            }
-        }
-    };
-
     /**
      * 开始执行显示广告弹窗的操作
      *
@@ -172,7 +162,7 @@ public class AdManager {
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(ViewGroup container, final int position) {
             String url = advInfoListList.get(position);
 
             View rootView = context.getLayoutInflater().inflate(R.layout.viewpager_item, null);
@@ -180,7 +170,14 @@ public class AdManager {
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             container.addView(rootView, params);
-            image.setOnClickListener(imageOnClickListener);
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onImageClickListener != null) {
+                        onImageClickListener.onImageClick(view, position);
+                    }
+                }
+            });
 
             Glide.with(context).load(url).into(image);
 
@@ -196,7 +193,7 @@ public class AdManager {
      */
     public interface OnImageClickListener {
 
-        void onImageClick(View view);
+        void onImageClick(View view, int position);
 
     }
 
