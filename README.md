@@ -77,6 +77,6 @@
 打开app的module中的build.gradle，在dependencies{}中，添加依赖，如下：
 
     dependencies {
-	        compile 'com.github.wenchaosong:ADDialog:1.0.5'
+	        compile 'com.github.wenchaosong:ADDialog:1.0.9'
 	}
 
