@@ -1,18 +1,14 @@
-apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.android.application'
 
-group = 'com.github.wenchaosong'
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
-
     defaultConfig {
-        minSdkVersion 14
+        applicationId "com.sample"
+        minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -23,7 +19,5 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.facebook.rebound:rebound:0.3.8'
-    compile 'com.github.bumptech.glide:glide:4.0.0' // glide
+    compile project(':library')
 }

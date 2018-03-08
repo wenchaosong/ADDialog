@@ -6,7 +6,7 @@
     <dimen name="line_indicator_stroke_width">1dp</dimen>
     <bool name="line_indicator_centered">true</bool>
 
-    <color name="blue">#FFFFFFFF</color>
+    <color name="blue">#0000ff</color>
     <color name="indicator_bg">#FFFFFFFF</color>
 
     <bool name="default_circle_indicator_centered">true</bool>
