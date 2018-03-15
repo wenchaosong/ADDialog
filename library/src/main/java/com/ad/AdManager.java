@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 
 import com.ad.indicator.CirclePageIndicator;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -40,7 +41,8 @@ public class AdManager {
      * 广告弹窗的宽高比
      */
     private float widthPerHeight = 0.75f;
-
+    // 弹窗默认图片
+    private int loadingRes = -1;
     // 弹窗背景是否透明
     private boolean isAnimBackViewTransparent = false;
     // 弹窗是否可关闭
@@ -180,7 +182,16 @@ public class AdManager {
                 }
             });
 
-            Glide.with(context).load(url).into(image);
+            if (loadingRes > 0) {
+                Glide.with(context)
+                        .load(url)
+                        .apply(new RequestOptions().placeholder(loadingRes))
+                        .into(image);
+            } else {
+                Glide.with(context)
+                        .load(url)
+                        .into(image);
+            }
 
             return rootView;
         }
@@ -199,6 +210,14 @@ public class AdManager {
     }
 
     // ######################## get set方法 #########################
+
+    /**
+     * 设置默认加载图片
+     */
+    public AdManager setLoadingRes(int res) {
+        this.loadingRes = res;
+        return this;
+    }
 
     /**
      * 设置弹窗距离屏幕左右两侧的距离
