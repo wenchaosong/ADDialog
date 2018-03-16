@@ -9,14 +9,9 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.ad.indicator.CirclePageIndicator;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-
-import java.util.List;
 
 /**
  * 首页广告管理类
@@ -25,24 +20,16 @@ public class AdManager {
 
     private Activity context;
     private DisplayMetrics displayMetrics = new DisplayMetrics();
-    private View contentView;
-    private ViewPager viewPager;
     private RelativeLayout adRootContent;
-    private AdAdapter adAdapter;
     private CirclePageIndicator mIndicator;
     private AnimDialogUtils animDialogUtils;
-    private List<String> advInfoListList;
-    /**
-     * 广告弹窗距离两侧的距离-单位(dp)
-     */
+    // 广告弹窗距离两侧的距离
     private int padding = 44;
     private int time = 1000;
-    /**
-     * 广告弹窗的宽高比
-     */
+    // 广告弹窗的宽高比
     private float widthPerHeight = 0.75f;
     // 弹窗默认图片
-    private int loadingRes = -1;
+    private PagerAdapter adapter;
     // 弹窗背景是否透明
     private boolean isAnimBackViewTransparent = false;
     // 弹窗是否可关闭
@@ -60,12 +47,9 @@ public class AdManager {
     // 是否覆盖全屏幕
     private boolean isOverScreen = true;
 
-    private OnImageClickListener onImageClickListener = null;
-
-
-    public AdManager(Activity context, List<String> advInfoListList) {
+    public AdManager(Activity context, PagerAdapter adapter) {
         this.context = context;
-        this.advInfoListList = advInfoListList;
+        this.adapter = adapter;
 
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         DisplayUtil.density = dm.density;
@@ -79,18 +63,20 @@ public class AdManager {
     /**
      * 开始执行显示广告弹窗的操作
      *
-     * @param animType
+     * @param animType 显示位置
      */
     public void showAdDialog(final int animType) {
 
-        contentView = LayoutInflater.from(context).inflate(R.layout.ad_dialog_content_layout, null);
+        View contentView = LayoutInflater.from(context).inflate(R.layout.ad_dialog_content_layout, null);
         adRootContent = (RelativeLayout) contentView.findViewById(R.id.ad_root_content);
-
-        viewPager = (ViewPager) contentView.findViewById(R.id.viewPager);
+        ViewPager viewPager = (ViewPager) contentView.findViewById(R.id.viewPager);
         mIndicator = (CirclePageIndicator) contentView.findViewById(R.id.indicator);
 
-        adAdapter = new AdAdapter();
-        viewPager.setAdapter(adAdapter);
+        if (adapter != null)
+            viewPager.setAdapter(adapter);
+        else {
+            new Exception("adapter is empty");
+        }
 
         if (pageTransformer != null) {
             viewPager.setPageTransformer(true, pageTransformer);
@@ -117,14 +103,6 @@ public class AdManager {
         }, time);
     }
 
-    /**
-     * 开始执行销毁弹窗的操作
-     */
-    public void dismissAdDialog() {
-        animDialogUtils.dismiss(AdConstant.ANIM_STOP_DEFAULT);
-    }
-
-
     private void setRootContainerHeight() {
 
         context.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -140,225 +118,107 @@ public class AdManager {
      * 根据页面数量，判断是否显示Indicator
      */
     private void isShowIndicator() {
-        if (advInfoListList.size() > 1) {
+        if (adapter.getCount() > 1) {
             mIndicator.setVisibility(View.VISIBLE);
         } else {
             mIndicator.setVisibility(View.INVISIBLE);
         }
     }
 
-    class AdAdapter extends PagerAdapter {
-
-        @Override
-        public int getCount() {
-            return advInfoListList.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, final int position) {
-            String url = advInfoListList.get(position);
-
-            View rootView = context.getLayoutInflater().inflate(R.layout.viewpager_item, null);
-            final ImageView image = (ImageView) rootView.findViewById(R.id.simpleDraweeView);
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            container.addView(rootView, params);
-            image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (onImageClickListener != null) {
-                        onImageClickListener.onImageClick(view, position);
-                    }
-                }
-            });
-
-            if (loadingRes > 0) {
-                Glide.with(context)
-                        .load(url)
-                        .apply(new RequestOptions().placeholder(loadingRes))
-                        .into(image);
-            } else {
-                Glide.with(context)
-                        .load(url)
-                        .into(image);
-            }
-
-            return rootView;
-        }
-    }
-
-
-    // ######################## 点击事件处理操作类 ########################
+    // ######################## API #########################
 
     /**
-     * ViewPager每一项的单击事件
+     * 开始执行销毁弹窗的操作
      */
-    public interface OnImageClickListener {
-
-        void onImageClick(View view, int position);
-
-    }
-
-    // ######################## get set方法 #########################
-
-    /**
-     * 设置默认加载图片
-     */
-    public AdManager setLoadingRes(int res) {
-        this.loadingRes = res;
-        return this;
+    public void dismissAdDialog() {
+        animDialogUtils.dismiss(AdConstant.ANIM_STOP_DEFAULT);
     }
 
     /**
      * 设置弹窗距离屏幕左右两侧的距离
-     *
-     * @param padding
-     * @return
      */
     public AdManager setPadding(int padding) {
         this.padding = padding;
-
         return this;
     }
 
     /**
      * 设置弹窗宽高比
-     *
-     * @param widthPerHeight
-     * @return
      */
     public AdManager setWidthPerHeight(float widthPerHeight) {
         this.widthPerHeight = widthPerHeight;
-
-        return this;
-    }
-
-    /**
-     * 设置ViewPager Item点击事件
-     *
-     * @param onImageClickListener
-     * @return
-     */
-    public AdManager setOnImageClickListener(OnImageClickListener onImageClickListener) {
-        this.onImageClickListener = onImageClickListener;
-
         return this;
     }
 
     /**
      * 设置背景是否透明
-     *
-     * @param animBackViewTransparent
-     * @return
      */
     public AdManager setAnimBackViewTransparent(boolean animBackViewTransparent) {
-        isAnimBackViewTransparent = animBackViewTransparent;
-
+        this.isAnimBackViewTransparent = animBackViewTransparent;
         return this;
     }
 
     /**
      * 设置弹窗关闭按钮是否可见
-     *
-     * @param dialogCloseable
-     * @return
      */
     public AdManager setDialogCloseable(boolean dialogCloseable) {
-        isDialogCloseable = dialogCloseable;
-
+        this.isDialogCloseable = dialogCloseable;
         return this;
     }
 
     /**
      * 设置弹窗关闭按钮点击事件
-     *
-     * @param onCloseClickListener
-     * @return
      */
     public AdManager setOnCloseClickListener(View.OnClickListener onCloseClickListener) {
         this.onCloseClickListener = onCloseClickListener;
-
         return this;
     }
 
     /**
      * 设置弹窗背景颜色
-     *
-     * @param backViewColor
-     * @return
      */
     public AdManager setBackViewColor(int backViewColor) {
         this.backViewColor = backViewColor;
-
         return this;
     }
 
     /**
      * 设置弹窗弹性动画弹性参数
-     *
-     * @param bounciness
-     * @return
      */
     public AdManager setBounciness(double bounciness) {
         this.bounciness = bounciness;
-
         return this;
     }
 
     /**
      * 设置弹窗弹性动画速度参数
-     *
-     * @param speed
-     * @return
      */
     public AdManager setSpeed(double speed) {
         this.speed = speed;
-
         return this;
     }
 
     /**
      * 设置弹窗弹出时间参数
-     *
-     * @param time
-     * @return
      */
     public AdManager setDelayTime(int time) {
         this.time = time;
-
         return this;
     }
 
     /**
      * 设置ViewPager滑动动画效果
-     *
-     * @param pageTransformer
      */
     public AdManager setPageTransformer(ViewPager.PageTransformer pageTransformer) {
         this.pageTransformer = pageTransformer;
-
         return this;
     }
 
     /**
      * 设置弹窗背景是否覆盖全屏幕
-     *
-     * @param overScreen
-     * @return
      */
     public AdManager setOverScreen(boolean overScreen) {
-        isOverScreen = overScreen;
-
+        this.isOverScreen = overScreen;
         return this;
     }
 }
